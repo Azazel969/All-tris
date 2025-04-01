@@ -38,7 +38,7 @@ public class Main : MonoBehaviour
             }
         }              
 
-        CreateFigure(EnTetrinoFigure.O);//
+        CreateFigure(EnTetrinoFigure.O);
     }
 
 
