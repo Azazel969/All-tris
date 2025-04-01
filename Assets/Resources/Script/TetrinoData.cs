@@ -1,27 +1,42 @@
 using UnityEngine;
 
 
-public enum EnTetrinoFigure { L, Z, I, O, T }
+public enum EnTetrinoFigure { L, Z, I, O, T } // виды фигур
 
 
 public class TetrinoData : MonoBehaviour
 {
+    /// <summary>
+    /// префаб куба дл€ формировани€ фигуры
+    /// </summary>
     private GameObject prefabCube;
 
+    /// <summary>
+    /// массив кубов из которых формируетс€ фигура
+    /// </summary>
     private GameObject[] tetrinoArray;
 
+    /// <summary>
+    /// поворот фигуры на данный момент
+    /// </summary>
     private int rotation;
-
+    
+    /// <summary>
+    /// текущий тип фигуры
+    /// </summary>
     private EnTetrinoFigure type;
-
+    
+    /// <summary>
+    /// инициализаци€ фигуры
+    /// </summary>
     public void Initialize(EnTetrinoFigure _type)
     {
-        for (int index = 0; index < transform.childCount; index++)
+        for (int index = 0; index < transform.childCount; index++) // удаление старых значений при смене типа фигуры
         {
             Destroy(transform.GetChild(index).gameObject);
         }
 
-        switch (_type) 
+        switch (_type) // указание позиции куба в фигуре
         {
             case EnTetrinoFigure.L:
                 
@@ -75,10 +90,10 @@ public class TetrinoData : MonoBehaviour
                 break;
             case EnTetrinoFigure.I:
 
-                type = _type;
-                GameObject obI_1 = Instantiate(prefabCube, SetCubePos_5(), Quaternion.identity);
-                obI_1.AddComponent<TetrinoSegment>();
-                obI_1.transform.SetParent(transform, false);
+                type = _type; // определение типа фигуры
+                GameObject obI_1 = Instantiate(prefabCube, SetCubePos_5(), Quaternion.identity); // создание объекта из перефаба по координатам SetCube
+                obI_1.AddComponent<TetrinoSegment>(); // добавление компонента дл€ контрол€ заполнени€ пол€
+                obI_1.transform.SetParent(transform, false); // установка родител€ (объект фигуры)
 
                 GameObject obI_2 = Instantiate(prefabCube, SetCubePos_2(), Quaternion.identity);
                 obI_2.AddComponent<TetrinoSegment>();
@@ -92,7 +107,7 @@ public class TetrinoData : MonoBehaviour
                 obI_4.AddComponent<TetrinoSegment>();
                 obI_4.transform.SetParent(transform, false);
 
-                for (int index = 0; index < tetrinoArray.Length; index++)
+                for (int index = 0; index < tetrinoArray.Length; index++) // заполнение массива фигуры 
                 {
                     tetrinoArray[index] = transform.GetChild(index).gameObject;
                 }
@@ -159,14 +174,14 @@ public class TetrinoData : MonoBehaviour
 
         tetrinoArray = new GameObject[4];
 
-        prefabCube = Resources.Load("Prefab/prefab_Cube") as GameObject;
+        prefabCube = Resources.Load("Prefab/prefab_Cube") as GameObject; // загрузка префаба куба в объект
     }
 
-    public GameObject[] GetTetrinoAray { get { return tetrinoArray; } }
+    public GameObject[] GetTetrinoArray { get { return tetrinoArray; } }
 
-    public void Rotation(bool _isPositve) 
+    public void Rotation(bool _isPositive) 
     {
-        if (_isPositve)
+        if (_isPositive)
         {
             rotation++;
             rotation = rotation % 4;

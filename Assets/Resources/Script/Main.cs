@@ -6,18 +6,28 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {//                         11 | 13   18 | 21
-    private const int wid = 11, hei = 18;
-    private float step = 1;
+    private const int wid = 13, hei = 21; // игровое поле
+    private float step = 1; // шаг смещения фигуры
 
-    private float currTime; 
+    private float currTime;
 
+    /// <summary>
+    /// ссылка на объект фигуры
+    /// </summary>
     private GameObject prefabTetrino;
+
+    /// <summary>
+    /// ссылка на саму фигуру
+    /// </summary>
     private Object prefabTetrinoObject;
 
     private TetrinoFigure figure;
 
     private TetrinoElement[,] arrayElement;
 
+    /// <summary>
+    /// скорость перемещения фигуры
+    /// </summary>
     [SerializeField] private float speed = 0.5f;
 
     private void Start()
@@ -25,7 +35,7 @@ public class Main : MonoBehaviour
         currTime = 0;
         arrayElement = new TetrinoElement[wid, hei];
 
-        prefabTetrino = Resources.Load("Prefab/Tetrino_figure") as GameObject;
+        prefabTetrino = Resources.Load("Prefab/Tetrino_figure") as GameObject; // загрузка префаба фигуры в объект
         prefabTetrinoObject = Resources.Load("Prefab/prefab_Tetrino_O") as GameObject;
 
         for (int y = 0; y < hei; y++)
@@ -44,7 +54,7 @@ public class Main : MonoBehaviour
 
     private void AddToArray()
     {
-        GameObject[] gameOb = figure.GetComponentInChildren<TetrinoData>().GetTetrinoAray;
+        GameObject[] gameOb = figure.GetComponentInChildren<TetrinoData>().GetTetrinoArray;
         for (int index = 0; index < gameOb.Length; index++)
         {
             int x = (int)gameOb[index].transform.position.x;
@@ -276,11 +286,14 @@ public class Main : MonoBehaviour
         return false;
     }
 
-    private void CreateFigure(EnTetrinoFigure _figure)
+    /// <summary>
+    /// создание фигуры из префаба по переданному типу
+    /// </summary>
+    private void CreateFigure(EnTetrinoFigure _figure) 
     {
-        figure = Instantiate(prefabTetrino, new Vector3(step * 5, step * (hei -2)), Quaternion.identity).GetComponent<TetrinoFigure>();
+        figure = Instantiate(prefabTetrino, new Vector3(step * 5, step * (hei -2)), Quaternion.identity).GetComponent<TetrinoFigure>();// создание фигуры из префаба по координатам vector3
 
-        figure.GetComponentInChildren<TetrinoData>().Initialize(_figure);
+        figure.GetComponentInChildren<TetrinoData>().Initialize(_figure); // приведение формы фигуры к нужному типу
 
         StartCoroutine(update(speed));
 
