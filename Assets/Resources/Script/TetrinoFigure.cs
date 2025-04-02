@@ -6,8 +6,11 @@ public enum DirectionTetrino { LEFT = -1, RIGHT = 1, DOWN}
 public class TetrinoFigure : MonoBehaviour
 {
 
-
-    public void DropTetrino(bool _isPositive) // функция смещения фигуры вверх / вниз
+    /// <summary>
+    /// функция смещения фигуры вверх / вниз
+    /// </summary>
+    /// <param name="_isPositive"></param>
+    public void DropTetrino(bool _isPositive)
     {
         if (_isPositive)
         {
@@ -21,6 +24,10 @@ public class TetrinoFigure : MonoBehaviour
         transform.Translate((int) _directionTetrino, 0, 0);
     }
 
+    /// <summary>
+    /// возращение массива сегментов фигуры
+    /// </summary>
+    /// <returns></returns>
     public TetrinoSegment[] GetSegments()
     {
         return GetComponentsInChildren<TetrinoSegment>();

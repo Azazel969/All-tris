@@ -17,12 +17,18 @@ public class Main : MonoBehaviour
     private GameObject prefabTetrino;
 
     /// <summary>
-    /// ссылка на саму фигуру
+    /// ссылка на префаб сегмента поля
     /// </summary>
     private Object prefabTetrinoObject;
 
+    /// <summary>
+    /// ссылка на текущую фигуру
+    /// </summary>
     private TetrinoFigure figure;
 
+    /// <summary>
+    /// массив сегментов для контроля поля (границы перемещения и заполнение слоя)
+    /// </summary>
     private TetrinoElement[,] arrayElement;
 
     /// <summary>
@@ -35,16 +41,17 @@ public class Main : MonoBehaviour
         currTime = 0;
         arrayElement = new TetrinoElement[wid, hei];
 
-        prefabTetrino = Resources.Load("Prefab/Tetrino_figure") as GameObject; // загрузка префаба фигуры в объект
+        prefabTetrino = Resources.Load("Prefab/Tetrino_figure") as GameObject; // загрузка префаба в объект
         prefabTetrinoObject = Resources.Load("Prefab/prefab_Tetrino_O") as GameObject;
 
+        // заполнение поля
         for (int y = 0; y < hei; y++)
         {
             for (int x = 0; x < wid; x++)
             {
-                GameObject gameOb = Instantiate(prefabTetrinoObject, new Vector3(x * step, y * step, 0), Quaternion.identity) as GameObject;
+                GameObject gameOb = Instantiate(prefabTetrinoObject, new Vector3(x * step, y * step, 0), Quaternion.identity) as GameObject; // спавн префаба по координатам
 
-                arrayElement[x,y] = gameOb.GetComponent<TetrinoElement>();
+                arrayElement[x, y] = gameOb.GetComponent<TetrinoElement>();
             }
         }              
 
@@ -295,15 +302,20 @@ public class Main : MonoBehaviour
 
         figure.GetComponentInChildren<TetrinoData>().Initialize(_figure); // приведение формы фигуры к нужному типу
 
-        StartCoroutine(update(speed));
+        StartCoroutine(UpdateFigure(speed));// начало движения фигуры
 
     }
 
-    private IEnumerator update(float _time)
+    /// <summary>
+    /// корутина для движения фигуры
+    /// </summary>
+    /// <param name="_time"></param>
+    /// <returns></returns>
+    private IEnumerator UpdateFigure(float _time)
     {
         while (true)
         {
-            yield return new WaitForSeconds(_time);  
+            yield return new WaitForSeconds(_time);  // задержка времени
             figure.DropTetrino(true);
 
             if (CheckPreIntersect(figure))
@@ -319,16 +331,22 @@ public class Main : MonoBehaviour
 
     }
 
-
+    /// <summary>
+    /// проверка на предварительное пересечение сегментов фигуры с границей поля
+    /// </summary>
+    /// <param name="_figure"></param>
+    /// <returns></returns>
     private bool CheckPreIntersect(TetrinoFigure _figure)
     {
         for (int index = 0; index < _figure.GetSegments().Length; index++)
         {
+            // получение координат сегментов фигуры на поле
             int x = (int)_figure.GetSegments()[index].transform.position.x;
             int y = (int)_figure.GetSegments()[index].transform.position.y;
 
             bool isIntersect = IsIntersect(x, y);
 
+            // если есть пересечение фигура поднимается вверх
             if (isIntersect)
             {
                 _figure.DropTetrino(false);
@@ -338,7 +356,12 @@ public class Main : MonoBehaviour
         return false;
     }
 
-
+    /// <summary>
+    /// мониторинг пересечения сегмента с границей поля
+    /// </summary>
+    /// <param name="_x"></param>
+    /// <param name="_y"></param>
+    /// <returns></returns>
     private bool IsIntersect(int _x, int _y)
     {
         try
