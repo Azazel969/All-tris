@@ -9,6 +9,9 @@ public class Main : MonoBehaviour
     private const int wid = 13, hei = 21; // игровое поле
     private float step = 1; // шаг смещения фигуры
 
+    /// <summary>
+    /// текущее время
+    /// </summary>
     private float currTime;
 
     /// <summary>
@@ -31,10 +34,11 @@ public class Main : MonoBehaviour
     /// </summary>
     private TetrinoElement[,] arrayElement;
 
-    /// <summary>
-    /// скорость перемещения фигуры
-    /// </summary>
-    [SerializeField] private float speed = 0.5f;
+    [SerializeField, Tooltip("базовая скорость перемещения фигуры")] private float speed = 0.5f;
+
+    [SerializeField, Tooltip("скорость перемещения фигуры в сторону")] private float speedDirection = 0.5f;
+
+    [SerializeField, Tooltip("скорость перемещения фигуры в низ")] private float speedDirectionDown = 0.4f;
 
     private void Start()
     {
@@ -209,13 +213,13 @@ public class Main : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown("LeftTetrino"))
+            if (Input.GetButtonDown("LeftTetrino"))//чтение клавиши
             {
                 currTime = 0;
-                figure.SetDirection(DirectionTetrino.LEFT);
-                if (CheckIntersect(figure))
+                figure.SetDirection(DirectionTetrino.LEFT); // сдвиг на 1 шаг в лево
+                if (CheckIntersect(figure))// проверка на пересечение
                 {
-                    figure.SetDirection(DirectionTetrino.RIGHT);
+                    figure.SetDirection(DirectionTetrino.RIGHT);// смещение назад
                 }
             }
             else if (Input.GetButtonDown("RightTetrino"))
@@ -230,19 +234,28 @@ public class Main : MonoBehaviour
 
             if (Input.GetButton("DownTetrino"))
             {
-                InputPres(DirectionTetrino.DOWN, 0.04f);
+                InputPres(DirectionTetrino.DOWN, speedDirectionDown);
             }
             else if (Input.GetButton("RightTetrino"))
             {
-                InputPres(DirectionTetrino.RIGHT, 0.05f);
+                InputPres(DirectionTetrino.RIGHT, speedDirection);
             }
             if (Input.GetButton("LeftTetrino"))
             {
-                InputPres(DirectionTetrino.LEFT, 0.05f);
+                InputPres(DirectionTetrino.LEFT, speedDirection);
+
             }
         }
     }
 
+    
+
+
+    /// <summary>
+    /// частота обновления клавиши
+    /// </summary>
+    /// <param name="_directionTetrino"></param>
+    /// <param name="_time"></param>
     private void InputPres(DirectionTetrino _directionTetrino, float _time)
     {
         currTime += Time.deltaTime;
@@ -276,6 +289,11 @@ public class Main : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// проверка на пересечение фигуры при смещении
+    /// </summary>
+    /// <param name="_figure"></param>
+    /// <returns></returns>
     private bool CheckIntersect(TetrinoFigure _figure)
     {
         for (int index = 0; index < _figure.GetSegments().Length; index++)
@@ -357,7 +375,7 @@ public class Main : MonoBehaviour
     }
 
     /// <summary>
-    /// мониторинг пересечения сегмента с границей поля
+    /// проверка на пересечение сегмента с границей поля
     /// </summary>
     /// <param name="_x"></param>
     /// <param name="_y"></param>
